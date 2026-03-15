@@ -1,4 +1,5 @@
-# PR1MAL-VAULT
+
+![Security Audit](https://github.com/WAZULU503/pr1mal-vault/actions/workflows/security.yml/badge.svg)# PR1MAL-VAULT
 
 Deterministic local secret storage for developers.
 
