@@ -1,0 +1,18 @@
+# Build binaries
+pv
+*.exe
+*.out
+
+# Go build cache
+bin/
+dist/
+
+# macOS
+.DS_Store
+
+# Editor
+.vscode/
+.idea/
+
+# Test artifacts
+*.test
