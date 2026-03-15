@@ -1,5 +1,6 @@
+![Security Audit](https://github.com/WAZULU503/pr1mal-vault/actions/workflows/security.yml/badge.svg)
 
-![Security Audit](https://github.com/WAZULU503/pr1mal-vault/actions/workflows/security.yml/badge.svg)# PR1MAL-VAULT
+# PR1MAL-VAULT
 
 Deterministic local secret storage for developers.
 
@@ -19,7 +20,7 @@ No cloud. No telemetry.
 - AES-256-GCM authenticated encryption
 - Versioned vault file format
 - Atomic vault writes (temp file → rename)
-- Hidden password input (no shell history leaks)
+- Hidden password input (prevents shell history leaks)
 - Vault file permission isolation (`0600`)
 
 ---
@@ -77,27 +78,10 @@ pv delete API_KEY
 
 ## Example Workflow
 
-Initialize the vault:
-
 ```bash
 pv init
-```
-
-Store a token:
-
-```bash
 pv set GITHUB_TOKEN
-```
-
-List stored keys:
-
-```bash
 pv ls
-```
-
-Retrieve the token:
-
-```bash
 pv get GITHUB_TOKEN
 ```
 
@@ -111,7 +95,7 @@ The encrypted vault file is stored at:
 ~/.pr1mal_vault
 ```
 
-Example structure:
+Example vault structure:
 
 ```json
 {
@@ -149,7 +133,7 @@ This makes brute-force attacks significantly more expensive.
 
 ### Encryption
 
-Secrets are encrypted using **AES-256-GCM**.
+Secrets are encrypted using **AES-256-GCM** authenticated encryption.
 
 AES-GCM provides:
 
@@ -232,6 +216,44 @@ If the machine is compromised, the vault cannot guarantee secrecy.
 
 ---
 
+## Verification
+
+You can verify the encryption pipeline locally.
+
+Build the binary:
+
+```bash
+go build -o pv ./cmd/pv
+```
+
+Initialize a vault:
+
+```bash
+./pv init
+```
+
+Store a test secret:
+
+```bash
+./pv set TEST_KEY
+```
+
+Retrieve it:
+
+```bash
+./pv get TEST_KEY
+```
+
+The stored vault file should contain only encrypted data:
+
+```bash
+cat ~/.pr1mal_vault
+```
+
+The output should contain encrypted payload data rather than plaintext secrets.
+
+---
+
 ## Author
 
 Wazulu the Ill Dravidian
@@ -244,63 +266,3 @@ https://github.com/WAZULU503
 ## License
 
 MIT License
-
----
-
-## Verification
-
-You can verify the encryption pipeline locally.
-
-Build the binary:
-
-```
-go build -o pv ./cmd/pv
-```
-
-Initialize a vault:
-
-```
-./pv init
-```
-
-Store a test secret:
-
-```
-./pv set TEST_KEY
-```
-
-Retrieve it:
-
-```
-./pv get TEST_KEY
-```
-
-The stored vault file (`~/.pr1mal_vault`) should contain only encrypted data.
-
-```
-cat ~/.pr1mal_vault
-```
-
-The contents should appear as structured metadata with encrypted payload data rather than plaintext secrets.
-
----
-
-## Security Notice
-
-PR1MAL-VAULT is designed for **local secret storage**.
-
-It protects against:
-
-- accidental secret exposure
-- disk inspection
-- vault file tampering
-
-It does **not** protect against:
-
-- malware on the host machine
-- keyloggers
-- compromised operating systems
-
-If the host system is compromised, secrets cannot be guaranteed safe.
-
-Always protect your machine and master password.
