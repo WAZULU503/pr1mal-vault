@@ -1,0 +1,38 @@
+name: Multi-Platform Build
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        goos: [linux, windows, darwin]
+        goarch: [amd64, arm64]
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.21'
+
+      - name: Build binary
+        env:
+          GOOS: ${{ matrix.goos }}
+          GOARCH: ${{ matrix.goarch }}
+        run: |
+          mkdir -p dist
+          go build -o dist/pv-${{ matrix.goos }}-${{ matrix.goarch }} ./cmd/pv
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: pv-${{ matrix.goos }}-${{ matrix.goarch }}
+          path: dist/*
