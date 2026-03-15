@@ -243,3 +243,63 @@ https://github.com/WAZULU503
 ## License
 
 MIT License
+
+---
+
+## Verification
+
+You can verify the encryption pipeline locally.
+
+Build the binary:
+
+```
+go build -o pv ./cmd/pv
+```
+
+Initialize a vault:
+
+```
+./pv init
+```
+
+Store a test secret:
+
+```
+./pv set TEST_KEY
+```
+
+Retrieve it:
+
+```
+./pv get TEST_KEY
+```
+
+The stored vault file (`~/.pr1mal_vault`) should contain only encrypted data.
+
+```
+cat ~/.pr1mal_vault
+```
+
+The contents should appear as structured metadata with encrypted payload data rather than plaintext secrets.
+
+---
+
+## Security Notice
+
+PR1MAL-VAULT is designed for **local secret storage**.
+
+It protects against:
+
+- accidental secret exposure
+- disk inspection
+- vault file tampering
+
+It does **not** protect against:
+
+- malware on the host machine
+- keyloggers
+- compromised operating systems
+
+If the host system is compromised, secrets cannot be guaranteed safe.
+
+Always protect your machine and master password.
