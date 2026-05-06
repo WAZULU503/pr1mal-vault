@@ -265,4 +265,4 @@ https://github.com/WAZULU503
 
 ## License
 
-MIT License
+GPL-2.0
